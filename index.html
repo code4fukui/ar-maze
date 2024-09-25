@@ -59,9 +59,9 @@ const createWall = () => {
 };
 
 const createMaze = () => {
-  const grp = new THREE.Group();
   const maze = new Maze(mazew, mazeh);
 
+  const grp = new THREE.Group();
   const wall = (x, y, rot) => {
     const w = createWall();
     if (rot) w.rotation.y = Math.PI / 2;
