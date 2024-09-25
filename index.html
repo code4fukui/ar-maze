@@ -13,6 +13,9 @@ APP: <a href="https://github.com/code4fukui/ar-maze/">src on GitHub</a><br>
 import { THREE, scene, camera, renderer, ctrls } from "https://code4fukui.github.io/egxr.js/egxr.js";
 import { Maze } from "./Maze.js";
 
+const mazew = location.hash.substring(1) || 5;
+const mazeh = mazew;
+
 /*
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
 directionalLight.position.set(.2, 0.3, .7);
@@ -57,8 +60,6 @@ const createWall = () => {
 
 const createMaze = () => {
   const grp = new THREE.Group();
-  const mazew = 5;
-  const mazeh = 5;
   const maze = new Maze(mazew, mazeh);
 
   const wall = (x, y, rot) => {
