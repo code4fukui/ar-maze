@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<canvas id="mazeCanvas" width=800 height=800></canvas>
+<script type="module">
+import { Maze } from "./Maze.js";
+
+const g = mazeCanvas.getContext("2d");
+const maze = new Maze(12, 12);
+maze.drawCanvas(g, 40);
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>AR Maze</title>
+</head>
+<body>
+<header>
+<h1>AR Maze</h1>
+LIB: <a href="https://github.com/code4fukui/egxr.js/">egxr.js</a><br>
+Maze: <a href="https://fukuno.jig.jp/4444">Maze.js</a><br>
+APP: <a href="https://github.com/code4fukui/ar-polygon/">src on GitHub</a><br>
+</header>
+
+<script type="module">
+import { THREE, scene, camera, renderer, ctrls } from "https://code4fukui.github.io/egxr.js/egxr.js";
+import { Maze } from "./Maze.js";
+
+/*
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+directionalLight.position.set(.2, 0.3, .7);
+scene.add(directionalLight);
+*/
+/*
+// 半球ライト（Hemisphere Light）
+const hemiLight = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.6);
+hemiLight.position.set(0, 5, 0);
+scene.add(hemiLight);
+*/
+// Point Light
+const pointLight = new THREE.PointLight(0xffffff, 5.0, 20, 0.8);
+pointLight.position.set(-1, 5, -1);
+scene.add(pointLight);
+// Point Light
+const pointLight2 = new THREE.PointLight(0xffffff, 5.0, 20, 0.8);
+pointLight2.position.set(10, 5, 10);
+scene.add(pointLight2);
+// Point Light
+const pointLight3 = new THREE.PointLight(0xffffff, 5.0, 20, 0.8);
+pointLight3.position.set(10, 5, -5);
+scene.add(pointLight3);
+
+const createBox = (w, h, d) => {
+  const geometry = new THREE.BoxGeometry(w, h, d);
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xEEEEEE,
+    side: THREE.DoubleSide,
+  });
+  const cube = new THREE.Mesh(geometry, material); 
+  return cube;
+};
+const wallh = 2.0;
+const wallw = 0.8;
+const walld = .05;
+const createWall = () => {
+  const w = createBox(wallw + walld, wallh, walld);
+  w.position.y = -0.3;
+  return w;
+};
+
+const createMaze = () => {
+  const grp = new THREE.Group();
+  const mazew = 5;
+  const mazeh = 5;
+  const maze = new Maze(mazew, mazeh);
+
+  const wall = (x, y, rot) => {
+    const w = createWall();
+    if (rot) w.rotation.y = Math.PI / 2;
+    w.position.x = x;
+    w.position.z = y;
+    grp.add(w);
+  };
+  const w2 = wallw / 2;
+  for (const i of maze.grid) {
+    const x = i.x * wallw;
+    const y = i.y * wallw;
+    if (i.walls.top)    wall(x, y - w2, false);
+    if (i.walls.bottom) wall(x, y + w2, false);
+    if (i.walls.left)   wall(x - w2, y, true);
+    if (i.walls.right)  wall(x + w2, y, true);
+  }
+  return grp;
+};
+
+const maze = createMaze();
+maze.rotation.y = Math.PI / 2;
+maze.position.z = -1.5;
+//maze.position.y = -.5;
+scene.add(maze);
+
+camera.position.y = 0;
+
+renderer.setAnimationLoop((t) => {
+  renderer.render(scene, camera);
+});
+
+document.body.onkeydown = (e) => {
+  const d = wallw;
+  const rd = Math.PI / 2;
+  if (e.key == "ArrowRight") {
+    camera.rotation.y -= rd;
+  } else if (e.key == "ArrowLeft") {
+    camera.rotation.y += rd;
+  } else if (e.key == "ArrowUp") {
+    const th = camera.rotation.y;
+    camera.position.z -= Math.cos(th) * d;
+    camera.position.x -= Math.sin(th) * d;
+  } else if (e.key == "ArrowDown") {
+    const th = camera.rotation.y;
+    camera.position.z += Math.cos(th) * d;
+    camera.position.x += Math.sin(th) * d;
+  }
+};
+</script>
+</body>
+</html>
